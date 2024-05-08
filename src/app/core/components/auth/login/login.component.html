@@ -1,0 +1,36 @@
+<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden col-md">
+    <div class="col flex align-items-center justify-content-center">
+        <img src="assets/tela-login.png" alt="">
+    </div>
+    <div class="col full surface-card flex align-items-center justify-content-center" style="background-color: rgb(250, 250, 250);">
+        <div class="col">
+            <div class="text-center ">
+                <img src="assets/logo2.png" alt="Image" height="50" class="">
+                <h4 class="font-20 mt-2">Bem-vindo!</h4>
+                <p class="text-muted">Realize o login para entrar</p>
+            </div>
+                <div class="w-full surface-card py-8 px-5 sm:px-8 flex align-items-center justify-content-center mb-5 gap-5">
+                    <form [formGroup]="formLogin" (ngSubmit)="login()" >
+                        <label for="email" class="block text-900 text-xl font-medium mb-2">Email</label>
+                        <input formControlName="email" id="email" type="text" placeholder="Email address" pInputText class="w-full md:w-30rem mb-5" style="padding:1rem">
+
+                        <label for="senha" class="block text-900 font-medium text-xl mb-2">Senha</label>
+                        <input type="{{showPassword ? 'text' : 'password'}}" formControlName="senha" id="senha" placeholder="Senha" styleClass="mb-5" pInputText class="w-full md:w-30rem mb-5" style="padding:1rem">
+
+                        <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="flex align-items-center">
+                            <p-checkbox id="rememberme" [binary]="true" styleClass="mr-2"></p-checkbox>
+                            <label for="rememberme">Lembre-me</label>
+                        </div>
+
+                        <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)">Esqueceu a senha?</a>
+                        </div>
+
+                        <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                            <button pButton pRipple label="Login" class="w-full p-3 text-xl"  (click)="login()" [disabled]="!formLogin.valid"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    </div>
+</div>

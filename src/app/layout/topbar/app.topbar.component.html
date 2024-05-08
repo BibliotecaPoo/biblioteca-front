@@ -1,0 +1,37 @@
+<div class="layout-topbar">
+    <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
+        <i class="pi pi-bars"></i>
+    </button>
+
+    <a class="layout-topbar-logo" routerLink="">
+        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="logo">
+        <span>BiblioTech</span>
+    </a>
+
+    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
+        <i class="pi pi-ellipsis-v"></i>
+    </button>
+
+    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+
+        <!-- <img src="assets/perfil.png" alt="Foto de perfil" aria-label="Foto de perfil" class="perfil"> -->
+
+        <button class="p-link layout-topbar-button" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item class="p-link layout-topbar-button">
+              <mat-icon class="pi pi-user">person</mat-icon>
+              <span>Sua conta</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon class="pi pi-cog">settings</mat-icon>
+              <span>Configurações</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>login</mat-icon>
+              <span>Sair</span>
+            </button>
+          </mat-menu>
+    </div>
+</div>
