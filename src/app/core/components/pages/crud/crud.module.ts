@@ -16,6 +16,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
     imports: [
@@ -34,7 +35,9 @@ import { DialogModule } from 'primeng/dialog';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
-        DialogModule
+        DialogModule,
+        SharedModule
+
     ],
     declarations: [CrudComponent]
 })

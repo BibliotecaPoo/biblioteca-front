@@ -20,6 +20,26 @@
         color: #C63737;
     }
 
+    &.status-Ativo {
+        background: #C8E6C9;
+        color: #256029;
+    }
+
+    &.status-Desativo {
+        background: #FFCDD2;
+        color: #C63737;
+    }
+
+    &.status-verde {
+        background: #C8E6C9;
+        color: #256029;
+    }
+
+    &.status-vermelho {
+        background: #FFCDD2;
+        color: #C63737;
+    }
+
     &.status-lowstock {
         background: #FEEDAF;
         color: #8A5340;

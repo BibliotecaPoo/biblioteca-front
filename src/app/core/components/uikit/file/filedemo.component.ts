@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MessageService } from 'primeng/api';
 
 @Component({
+    selector: 'app-filedemo',
     templateUrl: './filedemo.component.html',
     providers: [MessageService]
 })
@@ -9,18 +10,13 @@ export class FileDemoComponent {
 
     uploadedFiles: any[] = [];
 
+    @Output() fileSelected: EventEmitter<File> = new EventEmitter<File>();
+
+
     constructor(private messageService: MessageService) {}
 
-    onUpload(event: any) {
-        for (const file of event.files) {
-            this.uploadedFiles.push(file);
-        }
-
-        this.messageService.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
+    onFileSelected(event) {
+        const uploadedFiles: File = event.files[0];
+        this.fileSelected.emit(uploadedFiles);
     }
-
-    onBasicUpload() {
-        this.messageService.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded with Basic Mode' });
-    }
-
 }

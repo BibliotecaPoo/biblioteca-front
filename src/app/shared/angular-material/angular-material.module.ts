@@ -5,6 +5,11 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatTableModule} from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedModule } from 'primeng/api';
+import { TreeSelectModule } from 'primeng/treeselect';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   imports: [
@@ -16,7 +21,14 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     MatIconModule,
     MatButtonModule,
     ReactiveFormsModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatPaginatorModule,
+    ReactiveFormsModule,
+    SharedModule,
+    TreeSelectModule,
+    MatProgressSpinnerModule
   ]
 })
 export class AngularMaterialModule { }

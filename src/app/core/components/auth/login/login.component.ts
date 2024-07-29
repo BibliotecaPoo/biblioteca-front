@@ -44,24 +44,28 @@ export class LoginComponent {
     }
 
     login(){
+
         const userData: User = {
             email: this.formLogin.value.email,
             senha: this.formLogin.value.senha
-          };
+        };
 
-          console.log(userData);
+        console.log(userData);
 
-          this.authService.login(userData)
+        this.authService.login(userData)
           .subscribe({
             next: (sessao:any) =>{
               if(sessao){
                 this.token = sessao.token;
                 sessionStorage.setItem('token',this.token);
+                console.log(this.token);
+
                 this.router.navigate(['/']);
-              }else{
-                console.log("erro ao autenticar.");
               }
+            },
+            error: (err) => {
+                console.error('Falha ao autenticar', err);
             }
-          })
+        })
     }
 }

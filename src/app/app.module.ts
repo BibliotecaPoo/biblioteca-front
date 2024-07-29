@@ -14,11 +14,18 @@ import { PhotoService } from './demo/service/photo.service';
 import { ProductService } from './demo/service/product.service';
 import { AppLayoutModule } from './layout/app.layout.module';
 import { SharedModule } from './shared/shared.module';
+import { JwtInterceptorInterceptor } from './core/interceptor/jwt-interception.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent],
     imports: [AppRoutingModule, AppLayoutModule, BrowserAnimationsModule, SharedModule ],
     providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: JwtInterceptorInterceptor,
+            multi: true,
+          },
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService

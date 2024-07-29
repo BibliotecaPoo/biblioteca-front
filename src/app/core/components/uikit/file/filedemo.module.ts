@@ -14,5 +14,6 @@ import { FileDemoComponent } from './filedemo.component';
 		FileUploadModule
 	],
 	declarations: [FileDemoComponent],
+    exports:[FileDemoComponent]
 })
 export class FileDemoModule { }

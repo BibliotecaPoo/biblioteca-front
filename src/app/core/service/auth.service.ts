@@ -1,21 +1,36 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, delay, finalize, of, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-// http://localhost:5179/v1/auth/login
+
     private readonly API = 'api';
+    private _isRequesting: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
 
     constructor(private http: HttpClient) { }
 
-    login(user: User): Observable<string>{
-        console.log(user);
+    get isRequesting(): BehaviorSubject<boolean> {
+        return this._isRequesting;
+    }
 
-        return this.http.post<string>(`${this.API}/v1/auth/login`,user);
+    login(user: User): Observable<string> {
+        this._isRequesting.next(true);
+        return this.http.post<string>(`${this.API}/v1/auth/login`, user).pipe(
+            tap(token => {
+                sessionStorage.setItem('token', token);
+            }),
+            catchError(error => {
+                return throwError(error);
+            }),
+            finalize(() => {
+                this._isRequesting.next(false);
+            })
+        );
     }
 
     isLoggedIn(): boolean {
@@ -26,5 +41,4 @@ export class AuthService {
         sessionStorage.removeItem('token');
         return of(true);
     }
-
 }

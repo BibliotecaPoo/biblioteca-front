@@ -19,6 +19,11 @@ import { AppMenuitemComponent } from './app.menuitem.component';
 import { AppSidebarComponent } from './sidebar/app.sidebar.component';
 import { AppTopBarComponent } from './topbar/app.topbar.component';
 import { AppConfigModule } from './config/config.module';
+import { PageLoaderComponent } from './page-loader/page-loader.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { MenuModule } from 'primeng/menu';
+import { ButtonModule } from 'primeng/button';
+import { ContextMenuModule } from 'primeng/contextmenu';
 
 @NgModule({
     declarations: [
@@ -28,6 +33,7 @@ import { AppConfigModule } from './config/config.module';
         AppMenuComponent,
         AppSidebarComponent,
         AppLayoutComponent,
+        PageLoaderComponent
     ],
     imports: [
         BrowserModule,
@@ -42,7 +48,11 @@ import { AppConfigModule } from './config/config.module';
         RippleModule,
         RouterModule,
         AppConfigModule,
-        SharedModule
+        SharedModule,
+        ProgressSpinnerModule,
+        MenuModule,
+        ButtonModule,
+        ContextMenuModule
     ],
     exports: [AppLayoutComponent]
 })
