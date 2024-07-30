@@ -4,7 +4,7 @@
     </button>
 
     <a class="layout-topbar-logo ml-2" routerLink="">
-        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="logo">
+        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'black' : 'white'}}.png" alt="logo">
         <span>Biblioteca Virtual</span>
     </a>
 
@@ -12,25 +12,9 @@
         <i class="pi pi-ellipsis-v"></i>
     </button>
 
-    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-        <!-- <img src="assets/perfil.png" alt="Foto de perfil" aria-label="Foto de perfil" class="perfil"> -->
-
-        <button class="p-link layout-topbar-button" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-            <mat-icon>more_vert</mat-icon>
+    <div class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+        <button (click)="logout()" class="p-link layout-topbar-button"  >
+            <mat-icon>login</mat-icon>
         </button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item class="p-link layout-topbar-button">
-              <mat-icon class="pi pi-user">person</mat-icon>
-              <span>Sua conta</span>
-            </button>
-            <button mat-menu-item>
-              <mat-icon class="pi pi-cog">settings</mat-icon>
-              <span>Configurações</span>
-            </button>
-            <button mat-menu-item (click)="logout()">
-              <mat-icon>login</mat-icon>
-              <span>Sair</span>
-            </button>
-        </mat-menu>
     </div>
 </div>
