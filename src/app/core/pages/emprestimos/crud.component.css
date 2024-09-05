@@ -1,0 +1,17 @@
+.password-input {
+    position: relative;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.error-message {
+    color: red;
+  }

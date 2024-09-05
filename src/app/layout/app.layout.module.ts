@@ -54,6 +54,6 @@ import { ContextMenuModule } from 'primeng/contextmenu';
         ButtonModule,
         ContextMenuModule
     ],
-    exports: [AppLayoutComponent]
+    exports: [AppLayoutComponent, PageLoaderComponent]
 })
 export class AppLayoutModule { }

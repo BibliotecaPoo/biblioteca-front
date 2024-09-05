@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, catchError, delay, finalize, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { tap, catchError, finalize } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,8 @@ export class AuthService {
                 sessionStorage.setItem('token', token);
             }),
             catchError(error => {
-                return throwError(error);
+                console.log(error);
+                return throwError(()=>error);
             }),
             finalize(() => {
                 this._isRequesting.next(false);

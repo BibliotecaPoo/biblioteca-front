@@ -9,6 +9,8 @@ import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
     imports: [
@@ -21,8 +23,10 @@ import { SharedModule } from 'src/app/shared/shared.module';
         PasswordModule,
         ReactiveFormsModule,
         MatFormFieldModule,
-        SharedModule
+        SharedModule,
+        ToastModule
     ],
-    declarations: [LoginComponent]
+    declarations: [LoginComponent],
+    providers: [MessageService]
 })
 export class LoginModule { }

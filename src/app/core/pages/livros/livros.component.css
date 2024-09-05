@@ -1,0 +1,15 @@
+.error-message {
+    color: red;
+  }
+  .edicao-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .edicao-container input {
+    flex: 1;
+  }
+
+  .edicao-container span {
+    margin-left: 4px;
+  }

@@ -1,0 +1,189 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <h2 class="custom-heading mb-0"><b>Usuários Cadastrados</b></h2>
+                <ng-template pTemplate="right">
+                    <div class="my-2">
+                        <button pButton pRipple label="Novo Usuário" icon="pi pi-plus" class="p-button-success mr-2" (click)="openDialog()"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="users"
+                        responsiveLayout="scroll"
+                        [rows]="10"
+                        [globalFilterFields]="['id','nome','email','matricula', 'curso']"
+                        [paginator]="true"
+                        [rowsPerPageOptions]="[10,20,30]"
+                        [showCurrentPageReport]="true"
+                        currentPageReportTemplate="Página {currentPage} de {totalPages}"
+                        selectionMode="multiple"
+                        [rowHover]="true"
+                        dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Pesquisar..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="id">Id <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="nome">Nome <p-sortIcon field="nome"></p-sortIcon></th>
+                        <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+                        <th pSortableColumn="matricula">Matrícula <p-sortIcon field="matricula"></p-sortIcon></th>
+                        <th pSortableColumn="curso">Curso <p-sortIcon field="curso"></p-sortIcon></th>
+                        <th pSortableColumn="quantidadeEmprestimosRealizados">Empréstimos Realizados <p-sortIcon field="quantidadeEmprestimosRealizados"></p-sortIcon></th>
+                        <th pSortableColumn="bloqueado">Status</th>
+                        <th pSortableColumn="acao">Ações</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-user >
+                    <tr>
+                        <td style="width:14%; min-width:10rem;"><span class="p-column-title">Id</span>
+                            {{user.id}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Nome</span>
+                            {{user.nome}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Email</span>
+                            {{user.email}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Matricula</span>
+                            {{user.matricula}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Curso</span>
+                            {{user.curso}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Empréstimos Realizados</span>
+                            {{user.quantidadeEmprestimosRealizados}}
+                        </td>
+                        <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Status</span>
+                            <span [class]="'product-badge status-' + (user.bloqueado ? 'Desativo' : 'Ativo')">
+                                {{ user.bloqueado ? 'Bloqueado' : 'Ativo' }}
+                            </span>
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="openDialog(user)"></button>
+                                <button pButton pRipple icon="pi pi-folder" class="p-button-rounded p-button-warning" (click)="archiveUserDialog(user)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="userDialog" [style]="{width: '450px'}" header="Cadastrar Usuário" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+              <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+                <div class="field">
+                  <label for="nome">Nome</label>
+                  <input type="text" pInputText id="nome" formControlName="nome" required autofocus />
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.nome.errors?.required && formError.nome.touched">Nome obrigatório</small>
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.nome.errors?.minlength && formError.nome.touched">Nome deve conter pelo menos 3 caracteres.</small>
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.nome.errors?.maxlength && formError.nome.touched">Nome deve conter no máximo 50 caracteres.</small>
+                </div>
+                <div class="field">
+                  <label for="matricula">Matrícula</label>
+                  <input type="text" pInputText id="matricula" formControlName="matricula" required autofocus />
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.matricula.errors?.required && formError.matricula.touched">Matrícula obrigatória</small>
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.matricula.errors?.pattern && formError.matricula.touched">Matrícula deve conter exatamente 6 dígitos numéricos.</small>
+                </div>
+                <div class="field">
+                    <label for="curso">Curso</label>
+                    <input type="text" pInputText id="curso" formControlName="curso" required autofocus />
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.curso.errors?.required && formError.curso.touched">Curso obrigatório</small>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.curso.errors?.minlength && formError.curso.touched">Curso deve conter pelo menos 3 caracteres.</small>
+                </div>
+                <div class="formgrid grid">
+                  <div class="field col">
+                    <label for="email">Email</label>
+                    <input type="text" pInputText id="email" formControlName="email" required autofocus />
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.email.errors?.required && formError.email.touched">Email obrigatório</small>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.email.errors?.email && formError.email.touched">O email fornecido não é válido.</small>
+                  </div>
+                  <div class="field col">
+                    <label for="senha">Senha</label>
+                    <input pInputText id="senha" formControlName="senha" required autofocus type="password" />
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.senha.errors?.required && formError.senha.touched">Senha obrigatório</small>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.senha.errors?.pattern && formError.senha.touched">Senha deve conter exatamente 6 dígitos numéricos.</small>
+                  </div>
+                </div>
+              </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+              <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-danger" (click)="userDialog = false"></button>
+              <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-success" (click)="saveUser()" [disabled]="this.userForm.invalid"></button>
+            </ng-template>
+        </p-dialog>
+
+
+        <p-dialog [(visible)]="editDialog" [style]="{width: '450px'}" header="Atualizar Usuário" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+              <form [formGroup]="userForm" (ngSubmit)="updateUser()">
+                <div class="field">
+                  <label for="nome">Nome</label>
+                  <input type="text" pInputText id="nome" formControlName="nome" required />
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.nome.errors?.required && formError.nome.touched">Nome obrigatório</small>
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.nome.errors?.minlength && formError.nome.touched">O nome deve conter pelo menos 3 caracteres.</small>
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.nome.errors?.maxlength && formError.nome.touched">O nome pode ter no máximo 50 caracteres.</small>
+                </div>
+                <div class="field">
+                  <label for="matricula">Matrícula</label>
+                  <input type="text" pInputText id="matricula" formControlName="matricula" required/>
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.matricula.errors?.required && formError.matricula.touched">Matrícula obrigatória</small>
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.matricula.errors?.pattern && formError.matricula.touched">A matrícula deve conter exatamente 6 dígitos numéricos.</small>
+                </div>
+                <div class="field">
+                    <label for="curso">Curso</label>
+                    <input type="text" pInputText id="curso" formControlName="curso" required />
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.curso.errors?.required && formError.curso.touched">Curso obrigatório</small>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.curso.errors?.minlength && formError.curso.touched">Curso deve conter pelo menos 3 caracteres.</small>
+                </div>
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="email">Email</label>
+                        <input type="text" pInputText id="email" formControlName="email" required/>
+                        <small class="error-message ng-dirty ng-invalid" *ngIf="formError.email.errors?.required && formError.email.touched">Email obrigatório</small>
+                        <small class="error-message ng-dirty ng-invalid" *ngIf="formError.email.errors?.email && formError.email.touched">O email fornecido não é válido.</small>
+                    </div>
+                    <div class="field col">
+                        <label for="senha">Senha</label>
+                        <input pInputText id="senha" formControlName="senha" type="password"/>
+                        <small class="error-message ng-dirty ng-invalid" *ngIf="formError.senha.errors?.required && formError.senha.touched">Senha obrigatório</small>
+                        <small class="error-message error-message ng-dirty ng-invalid" *ngIf="formError.senha.errors?.pattern && formError.senha.touched">A senha deve conter exatamente 6 dígitos numéricos.</small>
+                    </div>
+                </div>
+              </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+              <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-danger" (click)="editDialog = false"></button>
+              <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-success" (click)="updateUser()" [disabled]="this.userForm.invalid" ></button>
+            </ng-template>
+        </p-dialog>
+
+
+        <p-dialog [(visible)]="archiveDialog" header="Desarquivar Usuário" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" style="font-size: 2rem; color: #ffc107;"></i>
+                <span *ngIf="user">Tem certeza que deseja <b>arquivar</b> o usuário <b>{{user.nome}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-primary" label="Não" (click)="archiveDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-danger" label="Sim" (click)="archiveUser(user.id)"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

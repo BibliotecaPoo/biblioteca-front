@@ -1,16 +1,12 @@
-export class User {
+export class UserUpdate {
     id?: number;
     nome?: string;
     matricula?: string;
     curso?:string;
     email?: string;
     senha?: string;
-    quantidadeEmprestimosPermitida?: number;
-    quantidadeEmprestimosRealizados?: number;
-    bloqueado?: boolean;
-    ativo?: boolean;
 
-    constructor(user: User) {
+    constructor(user: UserUpdate) {
         this.id = user.id;
         this.nome = user.nome;
         this.email = user.email;

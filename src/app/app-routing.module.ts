@@ -12,17 +12,11 @@ import { AppLayoutComponent } from './layout/app.layout.component';
                 canActivate: [authGuard],
                 canActivateChild: [authGuard],
                 children: [
-                    { path: '', loadChildren: () => import('./core/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
-                    { path: 'uikit', loadChildren: () => import('./core/components/uikit/uikit.module').then(m => m.UIkitModule) },
-                    { path: 'utilities', loadChildren: () => import('./core/components/utilities/utilities.module').then(m => m.UtilitiesModule) },
-                    { path: 'documentation', loadChildren: () => import('./core/components/documentation/documentation.module').then(m => m.DocumentationModule) },
-                    { path: 'blocks', loadChildren: () => import('./core/components/primeblocks/primeblocks.module').then(m => m.PrimeBlocksModule) },
-                    { path: 'pages', loadChildren: () => import('./core/components/pages/pages.module').then(m => m.PagesModule) },
+                    { path: 'dashboard', loadChildren: () => import('./core/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
+                    { path: 'pages', loadChildren: () => import('./core/pages/pages.module').then(m => m.PagesModule) },
                 ]
             },
             { path: 'auth',loadChildren: () => import('./core/components/auth/auth.module').then(m => m.AuthModule) },
-            { path: 'landing', loadChildren: () => import('./core/components/landing/landing.module').then(m => m.LandingModule) },
-            //{ path: 'notfound', component: NotfoundComponent },
             { path: '**', redirectTo: '/auth/login' },
         ], { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })
     ],

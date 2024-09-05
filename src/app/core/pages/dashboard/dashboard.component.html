@@ -1,0 +1,77 @@
+<div class="grid">
+        <div class="col-12 lg:col-6 xl:col-3 shadow">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Livros No Acervo</span>
+                        <div class="text-900 font-medium text-xl" >{{ totalLivros }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-book" style="color: #66B5A7; font-size: 60px;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3 shadow">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Livros Emprestados</span>
+                        <div class="text-900 font-medium text-xl">{{ totalEmprestimos }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-handshake-simple fa-flip-horizontal" style="color: #A97DE0; font-size: 60px;" ></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3 shadow">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Livros Disponíveis</span>
+                        <div class="text-900 font-medium text-xl">{{ totalLivrosDiponiveis }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center me-5">
+                        <i class="fa-solid fa-chart-simple" style="color: #F2B57D; font-size: 60px;"></i>
+                    </div>
+                </div>
+                <div></div>
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 xl:col-3 shadow">
+            <div class="card mb-0">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Usuários Cadastrados</span>
+                        <div class="text-900 font-medium text-xl">{{ totalUsuarios }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center">
+                        <i class="fa-solid fa-users fa-xl" style="color: #70c0d2; font-size: 60px;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow">
+                <span class="block text-500 font-medium mb-1" >Últimos Livros Emprestados</span>
+                <p-carousel [value]="ultimosEmprestimos" [numVisible]="3" [numScroll]="3" [circular]="false" [responsiveOptions]="carouselResponsiveOptions">
+                    <ng-template let-livro pTemplate="item">
+                            <div class="border-round m-5 text-center p-2" style="border: 1px solid var(--surface-d)">
+                                <span [class]="'product-badge status-' + ( livro.statusLivro == 'Disponivel' ? 'verde' : 'vermelho' )">
+                                    {{ livro.statusLivro }}
+                                </span>
+                                <div class="m-3">
+                                    <img *ngIf="livro?.nomeArquivoCapa" [src]="getCapaUrl(livro?.nomeArquivoCapa)" [alt]="livro?.titulo" class="shadow-4 zoom" width="50%"/>
+                                </div>
+                                <div>
+                                    <h3 class="block text-500 font-medium mb-1">{{livro?.titulo}}</h3>
+                                </div>
+                            </div>
+                    </ng-template>
+                </p-carousel>
+            </div>
+        </div>
+</div>
+

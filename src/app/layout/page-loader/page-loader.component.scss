@@ -6,25 +6,3 @@
     align-items: center;
     justify-content: center;
 }
-
-/* Personalização da cor do ProgressSpinner */
-// :host ::ng-deep .p-progress-spinner .p-progress-circle {
-//     animation: p-progress-spinner-color 1.5s ease-in-out infinite;
-// }
-
-// @keyframes p-progress-spinner-color {
-//     100%,
-//     0% {
-//         stroke: #d62d20;
-//     }
-//     40% {
-//         stroke: #0057e7;
-//     }
-//     66% {
-//         stroke: #008744;
-//     }
-//     80%,
-//     90% {
-//         stroke: #ffa700;
-//     }
-// }

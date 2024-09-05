@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class ImagemService {
 
-    private baseUrl: string = 'http://localhost:8081'; // servidor de imagens
+    private baseUrl: string = 'http://localhost:8081';
 
     constructor() { }
 

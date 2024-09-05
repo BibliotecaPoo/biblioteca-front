@@ -14,15 +14,15 @@ export class LivrosService {
 
     constructor(private http: HttpClient) { }
 
-    getLivros(): Observable<User[]>{
-        return this.http.get<User[]>(`${this.apiUrl}/obter-todos`);
+    getLivros(): Observable<Livro[]>{
+        return this.http.get<Livro[]>(`${this.apiUrl}/obter-todos`);
     }
 
     saveLivro(livro: Livro): Observable<any> {
         return this.http.post(`${this.apiUrl}`, livro).pipe(catchError(this.handleError));
     }
 
-    updateLivro(livro: Livro): Observable<any> {
+    updateLivro( livro: Livro): Observable<any> {
         return this.http.put<any>(`${this.apiUrl}/${livro.id}`, livro, {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
@@ -30,10 +30,20 @@ export class LivrosService {
         });
     }
 
-    deleteBook(id: number): Observable<any> {
-        // return this.http.delete(`${this.apiUrl}/${id}`);
-        return of(`Livro com ID ${id} deletado com sucesso`);
+    update(id: number, livro: Livro): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/${id}`, livro, {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        });
+    }
 
+    archiveLivro(id: number): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/desativar/${id}`, {});
+    }
+
+    unarchiveLivro(id: number): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/ativar/${id}`, {});
     }
 
     uploadCapaLivro(livroId: number, formData: FormData): Observable<any> {

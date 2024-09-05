@@ -9,8 +9,9 @@ export class Emprestimo {
     statusEmprestimo?: string;
     quantidadeRenovacoesPermitida?: number;
     quantidadeRenovacoesRealizadas?: number;
-    usuarioId?: User = { matricula: '', nome: '' };
-    livroId?: Livro;
+    usuario?: User;
+    livro?: Livro;
+    ativo?: boolean;
 
     constructor(data: Emprestimo) {
         this.id = data.id;
@@ -20,7 +21,8 @@ export class Emprestimo {
         this.statusEmprestimo = data.statusEmprestimo;
         this.quantidadeRenovacoesPermitida = data.quantidadeRenovacoesPermitida;
         this.quantidadeRenovacoesRealizadas = data.quantidadeRenovacoesRealizadas;
-        this.usuarioId = data.usuarioId;
-        this.livroId = data.livroId;
+        this.usuario = data.usuario;
+        this.livro = data.livro;
+        this.ativo = data.ativo;
     }
 }

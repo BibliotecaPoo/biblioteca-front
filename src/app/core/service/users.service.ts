@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { User } from '../models/user';
+import { UserUpdate } from '../models/userUpdate';
 
 @Injectable({
   providedIn: 'root'
@@ -19,16 +20,16 @@ export class UsersService {
         return this.http.post(`${this.apiUrl}`, user);
     }
 
-    updateUser(user: User): Observable<any> {
-        console.log(user);
-
-        return this.http.put<any>(`${this.apiUrl}/${user.id}`, user).pipe(
-            catchError(this.handleError));
+    updateUser(id: number, user: UserUpdate): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/${id}`, user).pipe(catchError(this.handleError));
     }
 
     deleteUser(id : Number){
         return this.http.delete(`${this.apiUrl}/${id}`);
+    }
 
+    archiveUser(id: number): Observable<any> {
+        return this.http.patch(`${this.apiUrl}/desativar/${id}`, {});
     }
 
     private handleError(error: HttpErrorResponse) {

@@ -1,6 +1,6 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, throwError, timeout } from 'rxjs';
 import { Emprestimo } from '../models/emprestimo';
 
 @Injectable({
@@ -14,46 +14,25 @@ constructor(private http: HttpClient) { }
 
     getEmprestimos(): Observable<Emprestimo[]>{
         return this.http.get<Emprestimo[]>('/api/v1/emprestimo/obter-todos');
-        //   .pipe(catchError(this.handleError<Emprestimo[]>('getEmprestimos', [])));
     }
 
-    saveEmprestimo(matricula: any, senha: any, idLivro: any): Observable<any> {
-        const emprestar = {
-            usuarioMatricula: matricula,
-            usuarioSenha: senha,
-            livroId: idLivro
-        };
-        return this.http.post('/api/v1/emprestimo', emprestar)
-        .pipe(
-        catchError(this.handleError));
+    saveEmprestimo(emprestimo: any): Observable<any> {
+        return this.http.post('/api/v1/emprestimo', emprestimo);
     }
 
-    devolucao(id: Number, usuarioSenha: String): Observable<any> {
-
-        const devolver = {
-            id: id,
-            usuarioSenha: usuarioSenha
-        };
-
-        return this.http.put<any>(`${this.apiUrl}/entrega/${id}`, devolver).pipe(
-            catchError(this.handleError));
+    devolucao(devolver: any): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/entrega/${devolver.id}`, devolver);
     }
 
-    renovar(id: Number, usuarioSenha: String): Observable<any> {
-
-        const devolver = {
-            id: id,
-            usuarioSenha: usuarioSenha
-        };
-
-        return this.http.put<any>(`${this.apiUrl}/renovacao/${id}`, devolver).pipe(
-            catchError(this.handleError));
+    renovar(emprestimo: any): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/renovacao/${emprestimo.id}`, emprestimo);
     }
 
-    private handleError(error: HttpErrorResponse) {
-        console.error('Backend returned code: ', error.status);
-        console.error('Body was: ', error.error);
-        return throwError('Something bad happened; please try again later.');
-    }
+    getPageEmprestimos(page: number, size: number): Observable<any> {
+        const params = new HttpParams()
+          .set('page', page.toString())
+          .set('size', size.toString());
 
+        return this.http.get<Emprestimo[]>(`${this.apiUrl}/pesquisar`, {params});
+    }
 }

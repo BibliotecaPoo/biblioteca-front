@@ -1,0 +1,306 @@
+<div class="grid">
+	<div class="col-12">
+        <p-toast></p-toast>
+
+		<div class="card">
+            <h2 class="custom-heading mb-0"><b>Livros Cadastrados</b></h2>
+			<p-dataView #dv [value]="livros" [paginator]="true" [rows]="9" filterBy="titulo" filterBy="categoria" filterBy="codigo" filterBy="autor" filterBy="editora" [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
+				<ng-template pTemplate="header">
+					<div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+						<span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input type="search" pInputText placeholder="Pesquisar..." (input)="onFilter(dv, $event)">
+                        </span>
+						<p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+                        <div>
+                            <button pButton pRipple label="Novo Livro" icon="pi pi-plus" class="p-button-success mr-2" (click)="openDialog()"></button>
+                        </div>
+					</div>
+				</ng-template>
+
+				<ng-template let-livros pTemplate="listItem">
+					<div class="col-12" *ngFor="let livro of livros">
+						<div class="flex flex-column md:flex-row align-items-center  w-full">
+                            <div class="flex-1 flex flex-column align-items-center">
+                                <span [class]="'product-badge status-' + ( livro.statusLivro == 'Disponivel' ? 'verde' : 'vermelho' )">
+                                    {{ livro.statusLivro }}
+                                </span>
+                                <img class="m-3" *ngIf="livro.nomeArquivoCapa" [src]="getCapaUrl(livro.nomeArquivoCapa)" alt="Capa do Livro" style="width: 100px; height: auto;">
+                            </div>
+                            <div class="flex-1 flex flex-column align-items-center text-center md:text-left">
+								<div class="font-bold text">{{ livro.titulo }}</div>
+							</div>
+                            <div class="flex-1 flex flex-column align-items-center text-center md:text-left">
+								<div class="font-bold text">{{ livro.autor }}</div>
+							</div>
+                            <div class="flex-1 flex flex-column align-items-center text-center md:text-left">
+								<div class="font-bold text">{{ livro.edicao }}</div>
+							</div>
+                            <div class="flex-1 flex flex-column align-items-center text-center md:text-left">
+								<div class="font-bold text">{{ livro.categoria }}</div>
+							</div>
+                            <div class=" col-sm-3 col-md-12 flex align-items-center justify-content-center gap-1">
+                                <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-info mr-2" (click)="infoLivro(livro)"></button>
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="openDialog(livro)"></button>
+                                <button pButton pRipple icon="pi pi-image" class="p-button-rounded p-button-primary mr-2" (click)="capaLivro(livro)"></button>
+                                <button pButton pRipple icon="pi pi-folder" class="p-button-rounded p-button-secondary" (click)="archiveDialog(livro)"></button>
+                            </div>
+						</div>
+					</div>
+				</ng-template>
+
+				<ng-template let-livros pTemplate="gridItem">
+					<div class="grid grid-nogutter">
+					<div class="col-12 md:col-4 lg:col-4" *ngFor="let livro of livros">
+						<div class="card m-3 border-1 surface-border">
+							<div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
+								<div class="flex align-items-center">
+									<span class="font-semibold">{{ livro.categoria }}</span>
+								</div>
+                                <span [class]="'product-badge status-' + ( livro.statusLivro == 'Disponivel' ? 'verde' : 'vermelho' )">
+                                    {{ livro.statusLivro }}
+                                </span>
+							</div>
+							<div class="flex flex-column align-items-center text-center mb-3">
+                                <img *ngIf="livro.nomeArquivoCapa" [src]="getCapaUrl(livro.nomeArquivoCapa)" alt="Capa do Livro" style="width: 100px; height: auto;">
+								<div class="flex flex-column align-items-center mt-3">
+                                    <button pButton pRipple class="p-button p-button-primary" (click)="loanLivroDialog(livro)">Emprestar</button>
+                                </div>
+                                <div class="text font-bold mt-3">{{ livro.codigo }}-{{ livro.titulo }}</div>
+                                <div class="mb-2">{{ livro.autor }}-{{ livro.edicao }}</div>
+                            </div>
+							<div class="flex align-items-center justify-content-center gap-1">
+                                <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-info mr-2" (click)="infoLivro(livro)"></button>
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="openDialog(livro)"></button>
+                                <button pButton pRipple icon="pi pi-image" class="p-button-rounded p-button-primary mr-2" (click)="capaLivro(livro)"></button>
+                                <button pButton pRipple icon="pi pi-folder" class="p-button-rounded p-button-secondary" (click)="archiveDialog(livro)"></button>
+                            </div>
+						</div>
+					</div>
+					</div>
+				</ng-template>
+			</p-dataView>
+		</div>
+
+        <!-- Cadastrar Livros -->
+
+        <p-dialog [(visible)]="livroDialog" [style]="{width: '550px'}" header="Cadastrar Livro" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+              <form [formGroup]="livroForm" (ngSubmit)="saveLivro()">
+                <div class="field">
+                  <label for="titulo">Título</label>
+                  <input type="text" pInputText id="titulo" formControlName="titulo" required autofocus />
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.titulo.errors?.required && formError.titulo.touched">Título obrigatório</small>
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.titulo.errors?.minlength && formError.titulo.touched">Título deve conter pelo menos 3 caracteres.</small>
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.titulo.errors?.maxlength && formError.titulo.touched">Título deve conter no máximo 50 caracteres.</small>
+                </div>
+                <div class="field">
+                  <label for="autor">Autor</label>
+                  <input type="text" pInputText id="autor" formControlName="autor" required autofocus />
+                  <small class="error-message ng-dirty ng-invalid" *ngIf="formError.autor.errors?.required && formError.autor.touched">Autor obrigatório</small>
+                </div>
+                <div class="formgrid grid">
+                <div class="field col">
+                    <label for="categoria">Categoria</label>
+                    <input type="text" pInputText id="categoria" formControlName="categoria" required autofocus />
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.categoria.errors?.required && formError.categoria.touched">Categoria obrigatório</small>
+                </div>
+                <div class="field col">
+                    <label for="quantidadeExemplaresDisponiveisEmEstoque">Estoque</label>
+                    <input type="text" pInputText id="quantidadeExemplaresDisponiveisEmEstoque" formControlName="quantidadeExemplaresDisponiveisEmEstoque" required autofocus />
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.quantidadeExemplaresDisponiveisEmEstoque.errors?.required && formError.quantidadeExemplaresDisponiveisEmEstoque.touched">Estoque obrigatório</small>
+                </div>
+                </div>
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="editora">Editora</label>
+                        <input type="text" pInputText id="editora" formControlName="editora" required autofocus />
+                        <small class="error-message ng-dirty ng-invalid" *ngIf="formError.editora.errors?.required && formError.editora.touched">Editora obrigatório</small>
+                    </div>
+                    <div class="field col">
+                        <label for="edicao">Edição</label>
+                        <div class="edicao-container">
+                          <input type="text" pInputText id="edicao" formControlName="edicao" required autofocus />
+                          <span>ª edição</span>
+                        </div>
+                        <small class="error-message ng-dirty ng-invalid" *ngIf="formError.edicao.errors?.required && formError.edicao.touched">
+                          Edição obrigatório
+                        </small>
+                    </div>
+                    <div class="field col">
+                        <label for="anoPublicacao">Ano de publicação</label>
+                        <input pInputText id="anoPublicacao" formControlName="anoPublicacao" required autofocus/>
+                        <small class="error-message ng-dirty ng-invalid" *ngIf="formError.anoPublicacao.errors?.required && formError.anoPublicacao.touched">Ano de publicação obrigatório</small>
+                    </div>
+                </div>
+              </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+              <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-danger" (click)="livroDialog = false"></button>
+              <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-success" (click)="saveLivro()" [disabled]="this.livroForm.invalid"></button>
+            </ng-template>
+        </p-dialog>
+
+        <!-- Atualizar Livros -->
+
+        <p-dialog [(visible)]="updateLivro" header="Atualizar Livro" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+              <form [formGroup]="livroForm" (ngSubmit)="updateLivro()">
+                <div class="formgrid grid gap-5 m-4">
+                    <div class="field" [style]="{width:'450px'}">
+
+                    <div class="field">
+                        <label for="titulo">Título</label>
+                        <input type="text" pInputText id="titulo" formControlName="titulo" required autofocus />
+                        <small class="error-message ng-dirty ng-invalid" *ngIf="formError.titulo.errors?.required && formError.titulo.touched">Título obrigatório</small>
+                        <small class="error-message ng-dirty ng-invalid" *ngIf="formError.titulo.errors?.minlength && formError.titulo.touched">Título deve conter pelo menos 3 caracteres.</small>
+                        <small class="error-message ng-dirty ng-invalid" *ngIf="formError.titulo.errors?.maxlength && formError.titulo.touched">Título deve conter no máximo 50 caracteres.</small>
+                    </div>
+                    <div class="field">
+                        <label for="autor">Autor</label>
+                        <input type="text" pInputText id="autor" formControlName="autor" required autofocus />
+                        <small class="error-message ng-dirty ng-invalid" *ngIf="formError.autor.errors?.required && formError.autor.touched">Autor obrigatório</small>
+                    </div>
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="categoria">Categoria</label>
+                            <input type="text" pInputText id="categoria" formControlName="categoria" required autofocus />
+                            <small class="error-message ng-dirty ng-invalid" *ngIf="formError.categoria.errors?.required && formError.categoria.touched">Categoria obrigatório</small>
+                        </div>
+                        <div class="field col">
+                            <label for="quantidadeExemplaresDisponiveisEmEstoque">Estoque</label>
+                            <input type="text" pInputText id="quantidadeExemplaresDisponiveisEmEstoque" formControlName="quantidadeExemplaresDisponiveisEmEstoque" required autofocus />
+                            <small class="error-message ng-dirty ng-invalid" *ngIf="formError.quantidadeExemplaresDisponiveisEmEstoque.errors?.required && formError.quantidadeExemplaresDisponiveisEmEstoque.touched">Estoque obrigatório</small>
+                        </div>
+                    </div>
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="editora">Editora</label>
+                            <input type="text" pInputText id="editora" formControlName="editora" required autofocus />
+                            <small class="error-message ng-dirty ng-invalid" *ngIf="formError.editora.errors?.required && formError.editora.touched">Editora obrigatório</small>
+                        </div>
+                        <div class="field col">
+                            <label for="edicao">Edição</label>
+                            <input type="text" pInputText id="edicao" formControlName="edicao" required autofocus />
+                            <small class="error-message ng-dirty ng-invalid" *ngIf="formError.edicao.errors?.required && formError.edicao.touched">
+                            Edição obrigatório
+                            </small>
+                        </div>
+                        <div class="field col">
+                            <label for="anoPublicacao">Ano de publicação</label>
+                            <input pInputText id="anoPublicacao" formControlName="anoPublicacao" required autofocus/>
+                            <small class="error-message ng-dirty ng-invalid" *ngIf="formError.anoPublicacao.errors?.required && formError.anoPublicacao.touched">Ano de publicação obrigatório</small>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <img *ngIf="livro.nomeArquivoCapa" [src]="getCapaUrl(livro.nomeArquivoCapa)" alt="Capa do Livro" style="width: 200px; height: auto;">
+                    </div>
+                    <div>
+                        <h4 [class]="'product-badge status-' + ( livro.statusLivro == 'Disponivel' ? 'verde' : 'vermelho')"> {{ livro.statusLivro }}</h4>
+                    </div>
+                </div>
+            </div>
+              </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+              <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-danger" (click)="updateLivro = false"></button>
+              <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-success" (click)="update()" [disabled]="this.livroForm.invalid"></button>
+            </ng-template>
+        </p-dialog>
+
+        <!-- Informaçoes de Livros  -->
+
+        <p-dialog [(visible)]="infoDialog" [style]="{width: '450px'}" header="Informações do Livro" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+              <form [formGroup]="livroForm">
+                <div class="field">
+                  <label for="titulo">Título</label>
+                  <span *ngIf="livro.titulo">: {{ livro.titulo }}</span>
+                </div>
+                <div class="field">
+                    <label for="autor">Autor</label>
+                    <span *ngIf="livro.autor">: {{ livro.autor }}</span>
+                </div>
+                <div class="field">
+                    <label for="categoria">Categoria</label>
+                    <span *ngIf="livro.categoria">: {{ livro.categoria }}</span>
+                </div>
+                <div class="field">
+                    <label for="editora">Editora</label>
+                    <span *ngIf="livro.editora">: {{ livro.editora }}</span>
+                </div>
+                <div class="field">
+                    <label for="edicao">Edição</label>
+                    <span *ngIf="livro.edicao">: {{ livro.edicao }}</span>
+                </div>
+                <div class="field">
+                    <label for="anoPublicacao">Ano de Publicação</label>
+                    <span *ngIf="livro.anoPublicacao">: {{ livro.anoPublicacao }}</span>
+                </div>
+                <div class="field">
+                    <label for="quantidadeExemplaresDisponiveisEmEstoque">Estoque</label>
+                    <span *ngIf="livro.quantidadeExemplaresDisponiveisEmEstoque">: {{ livro.quantidadeExemplaresDisponiveisEmEstoque }}</span>
+                </div>
+                <div class="field">
+                    <label for="quantidadeExemplaresDisponiveisParaEmprestimo">Disponiveis para emprestimo</label>
+                    <span *ngIf="livro.quantidadeExemplaresDisponiveisParaEmprestimo">: {{ livro.quantidadeExemplaresDisponiveisParaEmprestimo }}</span>
+                </div>
+              </form>
+            </ng-template>
+        </p-dialog>
+
+        <!-- Capa do Livro -->
+
+        <p-dialog [(visible)]="capaLivroDialog" header="Atualizar Imagem" [modal]="true">
+            <h4 *ngIf="livro"><b>{{ livro.titulo }}</b></h4>
+            <app-filedemo (fileSelected)="fileSelected($event)"></app-filedemo>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-success" (click)="sendCapa()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <!-- Arquivar Livro -->
+
+        <p-dialog [(visible)]="archiveLivroDialog" header="Arquivar Livro" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" style="font-size: 2rem; color: #ffc107;"></i>
+                <span *ngIf="livro" style="font-size: 15px;">Tem certeza que deseja <b>arquivar</b> o livro <b>{{livro.titulo}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-primary" label="Não" (click)="archiveLivroDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-danger" label="Sim" (click)="archiveLivro()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <!-- Novo Emprestimo -->
+
+        <p-dialog [(visible)]="loanDialog" [style]="{width: '450px'}" header="Novo Empréstimo" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="usuarioMatricula">Matrícula</label>
+                    <input type="text" pInputText id="usuarioMatricula" [(ngModel)]="emprestar.usuarioMatricula" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !emprestar.usuarioMatricula}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !emprestar.usuarioMatricula">Name is required.</small>
+                </div>
+
+                <div class="field">
+                    <label for="usuarioSenha">Senha</label>
+                    <input pInputText id="usuarioSenha" [(ngModel)]="emprestar.usuarioSenha" id="password" type="password">
+                </div>
+                <div class="field">
+                    <label for="livro">Código do Livro</label>
+                    <input pInputText id="livro" [(ngModel)]="emprestar.livro.codigo" id="livro" type="livro">
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-danger" (click)="loanDialog = false"></button>
+                <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-success" (click)="loanSave()"></button>
+            </ng-template>
+        </p-dialog>
+	</div>
+</div>

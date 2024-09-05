@@ -1,0 +1,176 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+
+            <p-toolbar styleClass="mb-4">
+                <h2 class="custom-heading mb-0"><b>Empréstimos</b></h2>
+                <ng-template pTemplate="right">
+                    <div class="my-2">
+                        <button pButton pRipple label="Novo Empréstimo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="emprestimos"
+                        responsiveLayout="scroll"
+                        [rows]="10"
+                        [globalFilterFields]="['id', 'dataEmprestimo', 'dataDevolucaoPrevista', 'dataDevolucaoRealizada', 'usuario', 'livro']"
+                        [paginator]="true"
+                        [rowsPerPageOptions]="[10,20,30]"
+                        [showCurrentPageReport]="true"
+                        currentPageReportTemplate="Página {currentPage} de {totalPages}"
+                        selectionMode="multiple"
+                        [rowHover]="true"
+                        dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Pesquisar..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="id">Id <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="dataEmprestimo">Empréstimo <p-sortIcon field="dataEmprestimo"></p-sortIcon></th>
+                        <th pSortableColumn="dataDevolucaoPrevista">Devolução Prevista <p-sortIcon field="dataDevolucaoPrevista"></p-sortIcon></th>
+                        <th pSortableColumn="dataDevolucaoRealizada">Devolução Realizada <p-sortIcon field="dataDevolucaoRealizada"></p-sortIcon></th>
+                        <th pSortableColumn="statusEmprestimo">Status do Empréstimo <p-sortIcon field="statusEmprestimo"></p-sortIcon></th>
+                        <th pSortableColumn="quantidadeRenovacoesRealizadas">Renovações Realizadas <p-sortIcon field="quantidadeRenovacoesRealizadas"></p-sortIcon></th>
+                        <th pSortableColumn="usuario">Usuário <p-sortIcon field="usuario"></p-sortIcon></th>
+                        <th pSortableColumn="livro">Livro <p-sortIcon field="livro"></p-sortIcon></th>
+                        <th pSortableColumn="acao">Ações</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-emprestimo >
+                    <tr>
+                        <td style="width: 14%; min-width: 10rem;">
+                            <span class="p-column-title">Id</span>
+                            {{ emprestimo.id }}
+                          </td>
+                          <td style="width: 14%; min-width: 10rem;">
+                            <span class="p-column-title">Data de Empréstimo</span>
+                            {{ emprestimo.dataEmprestimo }}
+                          </td>
+                          <td style="width: 14%; min-width: 10rem;">
+                            <span class="p-column-title">Data de Devolução Prevista</span>
+                            {{ emprestimo.dataDevolucaoPrevista }}
+                          </td>
+                          <td style="width: 14%; min-width: 10rem;">
+                            <span class="p-column-title">Data de Devolução Realizada</span>
+                            {{ emprestimo.dataDevolucaoRealizada }}
+                          </td>
+                          <td style="width: 14%; min-width: 10rem;">
+                            <span class="p-column-title">Status do Empréstimo</span>
+                            {{ emprestimo.statusEmprestimo }}
+                          </td>
+                          <td style="width: 14%; min-width: 10rem;">
+                            <span class="p-column-title">Quantidade de Renovações Realizadas</span>
+                            {{ emprestimo.quantidadeRenovacoesRealizadas }}
+                          </td>
+                          <td style="width: 14%; min-width: 10rem;">
+                            <span class="p-column-title">ID do Usuário</span>
+                            {{ emprestimo.usuario.nome }}
+                          </td>
+                          <td style="width: 14%; min-width: 10rem;">
+                            <span class="p-column-title">ID do Livro</span>
+                            {{ emprestimo.livro.titulo }}
+                          </td>
+
+                        <td style="width:14%; min-width:10rem;">
+                            <div class="flex">
+                                <button pButton pRipple label="Renovar" class="p-button-primary mr-2" (click)="renovarEmprestimoDialog(emprestimo)"></button>
+                                <button pButton pRipple label="Entregar" class="p-button-warning mr-2" (click)="entregarDialog(emprestimo)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="emprestimosDialog" [style]="{width: '450px'}" header="Novo Empréstimo" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <form [formGroup]="emprestimoForm" (ngSubmit)="saveEmprestimo()">
+                <div class="field">
+                    <label for="usuarioMatricula">Matrícula</label>
+                    <input pInputText id="usuarioMatricula" formControlName="usuarioMatricula"  id="usuarioMatricula" required autofocus/>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.usuarioMatricula.errors?.required && formError.usuarioMatricula.touched">Matrícula obrigatória</small>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.usuarioMatricula.errors?.pattern && formError.usuarioMatricula.touched">Matrícula deve conter exatamente 6 dígitos numéricos.</small>
+                </div>
+
+                <div class="field">
+                    <label for="usuarioSenha">Senha</label>
+                    <input pInputText id="usuarioSenha" formControlName="usuarioSenha" id="password" type="password">
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.usuarioSenha.errors?.required && formError.usuarioSenha.touched">Senha obrigatório</small>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.usuarioSenha.errors?.pattern && formError.usuarioSenha.touched">Senha deve conter exatamente 6 dígitos numéricos.</small>
+                </div>
+                <div class="field">
+                    <label for="livroCodigo">Código do Livro</label>
+                    <p-autoComplete
+                        id="livroCodigo"
+                        [suggestions]="filteredLivros"
+                        (completeMethod)="searchLivros($event)"
+                        field="display"
+                        [forceSelection]="true"
+                        placeholder="Digite o código ou título do livro"
+                        (onSelect)="onLivroSelect($event)"
+                    ></p-autoComplete>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.livroCodigo.errors?.required && formError.livroCodigo.touched">Código obrigatório</small>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.livroCodigo.errors?.pattern && formError.livroCodigo.touched">Código deve conter exatamente 4 dígitos numéricos.</small>
+                </div>
+            </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-danger" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-success" (click)="saveEmprestimo()" [disabled]="this.emprestimoForm.invalid"></button>
+            </ng-template>
+
+        </p-dialog>
+
+        <p-dialog [(visible)]="renovarDialog" [style]="{width: '450px'}" header="Renovar Empréstimo" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <form [formGroup]="emprestimoForm" (ngSubmit)="renovarEmprestimo()">
+                <div class="field">
+                    <label for="usuarioMatricula">Matrícula</label>
+                    <input pInputText id="usuarioMatricula" formControlName="usuarioMatricula"  id="usuarioMatricula" required autofocus/>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.usuarioMatricula.errors?.required && formError.usuarioMatricula.touched">Matrícula obrigatória</small>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.usuarioMatricula.errors?.pattern && formError.usuarioMatricula.touched">Matrícula deve conter exatamente 6 dígitos numéricos.</small>
+                </div>
+
+                <div class="field">
+                    <label for="usuarioSenha">Senha</label>
+                    <input pInputText id="usuarioSenha" formControlName="usuarioSenha" id="password" type="password">
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.usuarioSenha.errors?.required && formError.usuarioSenha.touched">Senha obrigatório</small>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.usuarioSenha.errors?.pattern && formError.usuarioSenha.touched">Senha deve conter exatamente 6 dígitos numéricos.</small>
+                </div>
+                <div class="field">
+                    <label for="livroCodigo">Código do Livro</label>
+                    <input pInputText id="livroCodigo" formControlName="livroCodigo" id="livroCodigo" type="livroCodigo" required autofocus>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.livroCodigo.errors?.required && formError.livroCodigo.touched">Código obrigatório</small>
+                    <small class="error-message ng-dirty ng-invalid" *ngIf="formError.livroCodigo.errors?.pattern && formError.livroCodigo.touched">Código deve conter exatamente 4 dígitos numéricos.</small>
+                </div>
+            </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-danger" (click)="renovarDialog = false"></button>
+                <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-success" (click)="renovarEmprestimo()" [disabled]="this.emprestimoForm.invalid"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="devolucaoLivro" header="Confirme Devolução" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" style="font-size: 2rem; color: #ffc107;"></i>
+                <span *ngIf="emprestimo">Confirme devolução do livro <b>{{emprestimo.livro.titulo}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-danger" label="Não" (click)="devolucaoLivro = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-success" label="Sim" (click)="entregarLivro()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>
+

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { LayoutService } from '../service/app.layout.service';
 
 @Component({
   selector: 'app-page-loader',
