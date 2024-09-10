@@ -14,8 +14,6 @@ import { UserUpdate } from 'src/app/core/models/userUpdate';
 })
 export class CrudComponent implements OnInit {
 
-    rowsPerPageOptions = [5, 10, 20];
-
     userDialog: boolean = false;
     editDialog: boolean = false;
     archiveDialog: boolean = false;

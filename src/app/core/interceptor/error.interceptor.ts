@@ -1,13 +1,14 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Router } from '@angular/router';
+import { catchError, Observable, throwError } from 'rxjs';
 
 import { AuthService } from '../service/auth.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-  constructor(private authenticationService: AuthService) { }
+  constructor(private authenticationService: AuthService, private router: Router) { }
 
   intercept(
     request: HttpRequest<any>,
@@ -17,9 +18,10 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError((err) => {
         if (err.status === 401) {
           this.authenticationService.logout();
-          location.reload();
+          this.router.navigate(['/login']);
         }
         const error = err.error.message || err.statusText;
+
         return throwError(()=>error);
       })
     );

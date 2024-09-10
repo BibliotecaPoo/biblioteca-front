@@ -1,17 +1,18 @@
-<p-toast position="top-center"></p-toast>
 <div class="surface-ground flex align-items-center justify-content-center">
     <div class="col-6 col-md-12 col-sm-12 flex align-items-center justify-content-center p-0">
         <img src="assets/tela-login.jpeg" alt="Imagem Biblioteca" style="width: 100%; height: 100vh;">
     </div>
+    <p-toast position="top-center"></p-toast>
+
     <div class="col-6 col-md-12 col-sm-12 full surface-card flex align-items-center justify-content-center" style="background-color: rgb(250, 250, 250);">
         <div class="col">
             <div class="flex justify-content-center">
                 <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'black' : 'white'}}.png" alt="Logo" height="20" class="mr-2"/>
-                <h4 class="font-medium ml-2">Biblioteca Virtual</h4>
+                <h4 class="font-medium ml-2">Biblioteca Acadêmica</h4>
             </div>
             <div class="text-center mb-6">
                 <h4 class="font-20 mt-2">Bem-vindo!</h4>
-                <p class="text-muted">Sistema administrativo de empréstimo de livros</p>
+                <p class="text-muted">Sistema de gerenciamento de empréstimos de livros</p>
             </div>
                 <div class="w-full surface-card flex align-items-center justify-content-center mb-5 gap-5">
                     <form [formGroup]="formLogin" (ngSubmit)="login()" >

@@ -132,14 +132,13 @@
 
         <p-dialog [(visible)]="renovarDialog" [style]="{width: '450px'}" header="Renovar Empréstimo" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
-                <form [formGroup]="emprestimoForm" (ngSubmit)="renovarEmprestimo()">
+            <form [formGroup]="emprestimoForm" (ngSubmit)="renovarEmprestimo()">
                 <div class="field">
                     <label for="usuarioMatricula">Matrícula</label>
                     <input pInputText id="usuarioMatricula" formControlName="usuarioMatricula"  id="usuarioMatricula" required autofocus/>
                     <small class="error-message ng-dirty ng-invalid" *ngIf="formError.usuarioMatricula.errors?.required && formError.usuarioMatricula.touched">Matrícula obrigatória</small>
                     <small class="error-message ng-dirty ng-invalid" *ngIf="formError.usuarioMatricula.errors?.pattern && formError.usuarioMatricula.touched">Matrícula deve conter exatamente 6 dígitos numéricos.</small>
                 </div>
-
                 <div class="field">
                     <label for="usuarioSenha">Senha</label>
                     <input pInputText id="usuarioSenha" formControlName="usuarioSenha" id="password" type="password">

@@ -16,25 +16,16 @@ import { LivrosService } from 'src/app/core/service/livros.service';
 })
 export class ListDemoComponent implements OnInit {
 
-
-    sortOptions: SelectItem[] = [];
-
     sortOrder: number = 0;
 
     sortField: string = '';
-
-    sourceCities: any[] = [];
-
-    targetCities: any[] = [];
-
-    orderCities: any[] = [];
 
     livros: Livro[] = [];
     livro: Livro;
 
     emprestimos: Emprestimo[] = [];
     emprestimo: Emprestimo;
-    emprestar: any = { usuarioMatricula: '', usuarioSenha: '', livro: 0 };
+    emprestar: any = { usuarioMatricula: '', usuarioSenha: '', livro: { codigo: '' } };
 
 
     livroDialog: boolean = false;
@@ -51,6 +42,9 @@ export class ListDemoComponent implements OnInit {
 
     arquivoSelecionado: File;
 
+    emprestimoForm: FormGroup;
+
+
 
     constructor(private formBuilder: FormBuilder, private livrosService: LivrosService, private imagemService: ImagemService, private messageService: MessageService, private emprestimosService: EmprestimosService) {
         this.livroForm = this.createForm();
@@ -59,6 +53,7 @@ export class ListDemoComponent implements OnInit {
 
     ngOnInit() {
         this.getAllLivros();
+
     }
 
     loadBook() {
@@ -107,20 +102,16 @@ export class ListDemoComponent implements OnInit {
             const livro: Livro = this.livroForm.value;
             livro.edicao = `${livro.edicao}ª edicao`;
 
-            console.log(livro);
-
             this.livrosService.saveLivro(livro).subscribe({
-              next: (response) => {
+              next: () => {
                 this.livroDialog = false;
                 this.messageService.add({ severity: 'success', summary: 'Salvo', detail: 'Salvo com sucesso' });
-                console.log('Livro salvo com sucesso:', response);
-              },
-              error: (error) => {
+                this.refresh();              },
+              error: () => {
                 this.livroDialog = false;
                 this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível salvar livro. Tente novamente mais tarde.' });
-                console.error('Erro ao salvar o livro:', error);
-              }
-            });
+                this.refresh();
+            }});
         }
     }
 
@@ -131,30 +122,40 @@ export class ListDemoComponent implements OnInit {
             if (this.livro.id) {
                 const livro: Livro = this.livroForm.value;
                    this.livrosService.update(this.livro.id,livro).subscribe({
-                    next: (response) => {
+                    next: () => {
                     this.updateLivro = false;
                     this.messageService.add({ severity: 'success', summary: 'Salvo', detail: 'Atualizado com sucesso' });
-                    console.log('Usuário atualizado com sucesso:', response);
-                  },
-                  error: (error) => {
+                    this.refresh();
+                    },
+                  error: () => {
                     this.updateLivro = false;
-                    this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível atualizar o usuário. Tente novamente mais tarde.' });
-                    console.error('Erro ao atualizar usuário:', error);
+                    this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível atualizar o livro. Tente novamente mais tarde.' });
                   }
                 });
             }
         }
     }
 
-    loanSave(){
+    loanSave() {
         this.loanDialog = true;
-        console.log(this.emprestar);
 
-        // this.emprestimosService.saveEmprestimo(this.emprestar.usuarioMatricula, this.emprestar.usuarioSenha, this.emprestar.livroId).subscribe(data => {
-        //     this.emprestimos.push(data);
-        //     this.loanDialog = false;
-        //     this.emprestimo = new Emprestimo({} as Emprestimo);
-        // });
+        const loan = {
+            usuarioMatricula: this.emprestar.usuarioMatricula,
+            usuarioSenha: this.emprestar.usuarioSenha,
+            livroCodigo: this.emprestar.livro.codigo
+        };
+
+        this.emprestimosService.saveEmprestimo(loan).subscribe({
+            next: () => {
+              this.loanDialog = false;
+              this.messageService.add({ severity: 'success', summary: 'Salvo', detail: 'Empréstimo realizado com sucesso' });
+              this.refresh();
+            },
+            error: () => {
+                this.loanDialog = false;
+                this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível emprestar livro. Tente novamente mais tarde.' });
+            }
+          });
     }
 
     archiveLivro(){
@@ -166,10 +167,12 @@ export class ListDemoComponent implements OnInit {
                 next: () => {
                     this.archiveLivroDialog = false;
                     this.messageService.add({ severity: 'warn', summary: 'Arquivado', detail: 'Arquivado com sucesso' });
+                    this.refresh();
                 },
                 error: () => {
                     this.archiveLivroDialog = false;
                     this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível arquivar o livro. Tente novamente mais tarde.' });
+                    this.refresh();
                 }
             });
         }
@@ -188,6 +191,7 @@ export class ListDemoComponent implements OnInit {
             () => {
                 this.capaLivroDialog = false;
                 this.messageService.add({ severity: 'success', summary: 'Capa', detail: 'Capa atualizada com sucesso' });
+                this.refresh();
             });
         }
     }
@@ -217,7 +221,8 @@ export class ListDemoComponent implements OnInit {
         this.archiveLivroDialog = true;
     }
 
-    loanLivroDialog(){
+    loanLivroDialog(livro: any){
+        this.emprestar.livro.codigo = livro.codigo;
         this.loanDialog = true;
     }
 

@@ -13,10 +13,10 @@
 
             <p-table #dt [value]="users"
                         responsiveLayout="scroll"
-                        [rows]="10"
+                        [rows]="5"
                         [globalFilterFields]="['id','nome','email','matricula', 'curso']"
                         [paginator]="true"
-                        [rowsPerPageOptions]="[10,20,30]"
+                        [rowsPerPageOptions]="[5,10,20]"
                         [showCurrentPageReport]="true"
                         currentPageReportTemplate="Página {currentPage} de {totalPages}"
                         selectionMode="multiple"
@@ -32,7 +32,6 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="id">Id <p-sortIcon field="id"></p-sortIcon></th>
                         <th pSortableColumn="nome">Nome <p-sortIcon field="nome"></p-sortIcon></th>
                         <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
                         <th pSortableColumn="matricula">Matrícula <p-sortIcon field="matricula"></p-sortIcon></th>
@@ -44,9 +43,6 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-user >
                     <tr>
-                        <td style="width:14%; min-width:10rem;"><span class="p-column-title">Id</span>
-                            {{user.id}}
-                        </td>
                         <td style="width:14%; min-width:10rem;">
                             <span class="p-column-title">Nome</span>
                             {{user.nome}}

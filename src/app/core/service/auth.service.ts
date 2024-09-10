@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
-import { User } from '../models/user';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { tap, catchError, finalize } from 'rxjs/operators';
+import { catchError, finalize, tap } from 'rxjs/operators';
+
+import { User } from '../models/user';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
 
@@ -26,7 +27,6 @@ export class AuthService {
                 sessionStorage.setItem('token', token);
             }),
             catchError(error => {
-                console.log(error);
                 return throwError(()=>error);
             }),
             finalize(() => {

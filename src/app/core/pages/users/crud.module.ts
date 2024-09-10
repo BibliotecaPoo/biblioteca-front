@@ -19,6 +19,7 @@ import { DialogModule } from 'primeng/dialog';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
+import { PaginatorModule } from 'primeng/paginator';
 
 @NgModule({
     imports: [
@@ -40,7 +41,9 @@ import { MessagesModule } from 'primeng/messages';
         DialogModule,
         SharedModule,
         MessageModule,
-        MessagesModule
+        MessagesModule,
+        TableModule,
+        PaginatorModule
     ],
     declarations: [CrudComponent]
 })

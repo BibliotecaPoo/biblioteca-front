@@ -79,13 +79,8 @@ export class CrudComponent implements OnInit {
     }
 
     loadLivros(): void {
-        this.livrosService.getLivros().subscribe({
-          next: (data: Livro[]) => {
-            this.livros = data;
-          },
-          error: () => {
-            console.error('Erro ao carregar livros');
-          }
+        this.livrosService.getLivros().subscribe((livros) => {
+            this.livros = livros;
         });
     }
 
@@ -109,8 +104,6 @@ export class CrudComponent implements OnInit {
     }
 
     getAllEmprestimos(): void{
-        console.log("oi");
-
         this.emprestimosService.getEmprestimos().subscribe(
             (emprestimos: Emprestimo[]) => {
               this.emprestimos = emprestimos
@@ -151,7 +144,7 @@ export class CrudComponent implements OnInit {
             },
             error: () => {
                 this.renovarDialog = false;
-                this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível renovar empréstimo - usuário possivelmente bloqueado.' });
+                this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível renovar empréstimo - Usuário possivelmente bloqueado.' });
             }
         });
     }
